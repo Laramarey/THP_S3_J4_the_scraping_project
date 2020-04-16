@@ -103,7 +103,7 @@ values_price = crypto_values
 
   for a in 0..keys_symbols.length-1 do # pour tout élément a compris entre 0 et l'avant-dernier élément de mon tableau
     result[a] = Hash.new # mon tableau result aura en index de l'élément un hash
-    result[a][keys_symbols[a].text]= values_price[a].text #ce hash imbriqué dans mon tableau pour chaque élément de l'index sera un couple clé/valeur avec key_symbols en clé et values_price en valeur
+    result[a][keys_symbols[a].text]= values_price[a].text.gsub(/[^\d\.]/, '') #ce hash imbriqué dans mon tableau pour chaque élément de l'index sera un couple clé/valeur avec key_symbols en clé et values_price en valeur
   end
 
   puts result #affiche le tableau de résultat appelé "result"
