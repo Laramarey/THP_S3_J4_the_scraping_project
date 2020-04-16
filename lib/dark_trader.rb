@@ -4,12 +4,46 @@ require 'rubygems'
 require 'pry'
 require 'open-uri'
 require 'nokogiri'
+require 'colorize'
 
 #2/mettre mon url
 
 URL = "https://coinmarketcap.com/all/views/all/"
 
+#______________________J'ai fait mon testing à la fin pour ne pas m'embrouiller_______________
 
+#2e étape de mon testing : est-ce que mes noms de monnaie s'affichent correctement, est-ce que mes valeurs associées s'affichent correctement ? cf dans le cours, testing de crytpo scraper
+def testing
+
+page = open_url(URL)
+  puts "Error".red + " - HTML not extracted" if !page
+  puts "Succes".green + " - Html succesfully extracted" if page
+
+  list_key_symbols = page.xpath('//td[contains(@class,"cmc-table__cell cmc-table__cell--sortable cmc-table__cell--left cmc-table__cell--sort-by__symbol")]//div')
+  puts "Succes".green + " - currencies list successfully extracted" if list_key_symbols.any?
+  puts "Error".red + " - currencies list extraction failed" if !list_key_symbols.any?
+  
+  list_values_price = page.xpath('//td[contains(@class, "cmc-table__cell cmc-table__cell--sortable cmc-table__cell--right cmc-table__cell--sort-by__price")]//a[contains(@href,"/currencies/")]')
+  puts "Succes".green + " crypto_values successfully extracted" if list_values_price.any?
+  puts "Error".red + " - crypto_values_extraction failed" if !list_values_price.any?
+end
+
+#1ère étape de mon testing 
+#la page s'affiche-t-elle bien ?
+
+def open_url(link)
+  return nil if (link.empty? || link.nil?)
+    page = Nokogiri::HTML(open(link))
+  if page then
+    puts "Succes".green + " - #{link} succesfully extracted"
+    return page
+  else
+    puts "Error".red + " - #{link}  not extracted" 
+    return nil
+  end
+end
+
+#__________________________________________________________________________________________________
 
 #3/ isoler les éléments HTML qui vont bien
 
@@ -22,7 +56,7 @@ keys_symbols = page.xpath('//td[contains(@class,"cmc-table__cell cmc-table__cell
 
 
 #mon test avec css
-#keys_symbols = URL.css('a.cmc-link').text
+#keys_symbols = page.css('a.cmc-link').text
 
 #keys_symbols = page.xpath('//*[@id="__next"]/div/div[2]/div[1]/div[2]/div/div[2]/div[3]/div/table/tbody/tr[1]/td[3]/div')
     #all_crypto_name = un array 
@@ -41,7 +75,7 @@ values_price = page.xpath('//td[contains(@class, "cmc-table__cell cmc-table__cel
 
 
 #mon test avec css
-#values_price = URL.css('a.cmc-link').attribute('href').text
+#values_price = page.css('a.cmc-link').attribute('href').text
 
 
 return values_price
@@ -82,10 +116,10 @@ end
 crypto_scraper #je ferme ma dernière méthode
 
 
+testing #fin de ma méthode de testing qui englobe le tout
 
 
-
-
+#__________________________________________Echanges avec le groupe__________________________________________________________________________________
 #autres méthodes 
 
 # test jeremy page.xpath('//*[@id="__next"]/div/div[2]/div[1]/div[2]/div/div[2]/div[3]/div/table/tbody/tr[1]/td[3]/div
